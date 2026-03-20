@@ -20,8 +20,9 @@ export class WorkflowInstance implements WorkflowHandle {
     workflowKey: string,
     environment: Environment,
     source?: string,
+    existingId?: string,
   ) {
-    this.id = uuidv7();
+    this.id = existingId ?? uuidv7();
     this.client = client;
     this.workflowKey = workflowKey;
     this.environment = environment;
@@ -46,7 +47,6 @@ export class WorkflowInstance implements WorkflowHandle {
       workflowInstanceId: this.id,
       eventType,
       payload,
-      confirmationLevel: options?.level,
       emittedAt: new Date().toISOString(),
       idempotencyKey: options?.idempotencyKey ?? `${this.id}:${eventType}:${this.seq}`,
       sequenceNumber: this.seq,
@@ -69,7 +69,7 @@ export class WorkflowInstance implements WorkflowHandle {
 
     await this.emit('workflow.completed', {
       workflowKey: this.workflowKey,
-    }, { level: 'E' });
+    });
 
     this.completed = true;
     await this.client.flush();

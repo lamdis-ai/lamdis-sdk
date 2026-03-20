@@ -11,8 +11,8 @@ export class WorkflowInstance {
     workflowKey;
     environment;
     source;
-    constructor(client, workflowKey, environment, source) {
-        this.id = uuidv7();
+    constructor(client, workflowKey, environment, source, existingId) {
+        this.id = existingId ?? uuidv7();
         this.client = client;
         this.workflowKey = workflowKey;
         this.environment = environment;
@@ -30,7 +30,6 @@ export class WorkflowInstance {
             workflowInstanceId: this.id,
             eventType,
             payload,
-            confirmationLevel: options?.level,
             emittedAt: new Date().toISOString(),
             idempotencyKey: options?.idempotencyKey ?? `${this.id}:${eventType}:${this.seq}`,
             sequenceNumber: this.seq,
@@ -51,7 +50,7 @@ export class WorkflowInstance {
             return;
         await this.emit('workflow.completed', {
             workflowKey: this.workflowKey,
-        }, { level: 'E' });
+        });
         this.completed = true;
         await this.client.flush();
     }

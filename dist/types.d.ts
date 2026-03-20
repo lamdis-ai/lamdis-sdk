@@ -21,8 +21,6 @@ export interface LamdisConfig {
 }
 /** Options when emitting an event */
 export interface EmitOptions {
-    /** Confirmation level for this event */
-    level?: ConfirmationLevel;
     /** Custom idempotency key (auto-generated if omitted) */
     idempotencyKey?: string;
     /** Extra metadata */
@@ -33,7 +31,6 @@ export interface LamdisEvent {
     workflowInstanceId: string;
     eventType: string;
     payload: Record<string, unknown>;
-    confirmationLevel?: ConfirmationLevel;
     emittedAt: string;
     idempotencyKey?: string;
     sequenceNumber?: number;

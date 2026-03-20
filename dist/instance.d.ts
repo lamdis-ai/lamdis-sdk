@@ -12,7 +12,7 @@ export declare class WorkflowInstance implements WorkflowHandle {
     private readonly workflowKey;
     private readonly environment;
     private readonly source;
-    constructor(client: EventClient, workflowKey: string, environment: Environment, source?: string);
+    constructor(client: EventClient, workflowKey: string, environment: Environment, source?: string, existingId?: string);
     /**
      * Emit an evidence event for this workflow instance.
      */

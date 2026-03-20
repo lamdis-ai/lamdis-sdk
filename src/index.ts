@@ -10,7 +10,6 @@ export type {
   IngestResponse,
   WorkflowHandle,
   EmitOptions,
-  ConfirmationLevel,
   Environment,
 } from './types.js';
 
@@ -28,8 +27,8 @@ export type {
  * });
  *
  * const instance = lamdis.startWorkflow('customer-requests-close-account');
- * await instance.emit('message.received', { content: msg }, { level: 'A' });
- * await instance.emit('tool.invoked', { tool: 'closeAccount' }, { level: 'B' });
+ * await instance.emit('message.received', { content: msg });
+ * await instance.emit('tool.invoked', { tool: 'closeAccount' });
  * await instance.complete();
  *
  * // On shutdown
@@ -61,6 +60,24 @@ export class Lamdis {
       workflowKey,
       this.environment,
       source ?? this.source,
+    );
+  }
+
+  /**
+   * Resume an existing workflow instance (e.g. from a different request
+   * using the x-lamdis-instance-id header).
+   *
+   * @param instanceId - The existing workflow instance ID to resume
+   * @param workflowKey - The workflow name/key
+   * @param source - Optional source identifier for the emitting service
+   */
+  resumeWorkflow(instanceId: string, workflowKey: string, source?: string): WorkflowHandle {
+    return new WorkflowInstance(
+      this.client,
+      workflowKey,
+      this.environment,
+      source ?? this.source,
+      instanceId,
     );
   }
 

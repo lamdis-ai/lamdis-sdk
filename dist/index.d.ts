@@ -1,7 +1,7 @@
 import type { LamdisConfig, WorkflowHandle } from './types.js';
 export { uuidv7 } from './uuidv7.js';
 export { extractInstanceId, propagationHeaders, expressMiddleware, fastifyPlugin } from './middleware.js';
-export type { LamdisConfig, LamdisEvent, IngestResponse, WorkflowHandle, EmitOptions, ConfirmationLevel, Environment, } from './types.js';
+export type { LamdisConfig, LamdisEvent, IngestResponse, WorkflowHandle, EmitOptions, Environment, } from './types.js';
 /**
  * Main Lamdis SDK client.
  *
@@ -16,8 +16,8 @@ export type { LamdisConfig, LamdisEvent, IngestResponse, WorkflowHandle, EmitOpt
  * });
  *
  * const instance = lamdis.startWorkflow('customer-requests-close-account');
- * await instance.emit('message.received', { content: msg }, { level: 'A' });
- * await instance.emit('tool.invoked', { tool: 'closeAccount' }, { level: 'B' });
+ * await instance.emit('message.received', { content: msg });
+ * await instance.emit('tool.invoked', { tool: 'closeAccount' });
  * await instance.complete();
  *
  * // On shutdown
@@ -39,6 +39,15 @@ export declare class Lamdis {
      * @param source - Optional source identifier for the emitting service
      */
     startWorkflow(workflowKey: string, source?: string): WorkflowHandle;
+    /**
+     * Resume an existing workflow instance (e.g. from a different request
+     * using the x-lamdis-instance-id header).
+     *
+     * @param instanceId - The existing workflow instance ID to resume
+     * @param workflowKey - The workflow name/key
+     * @param source - Optional source identifier for the emitting service
+     */
+    resumeWorkflow(instanceId: string, workflowKey: string, source?: string): WorkflowHandle;
     /**
      * Flush all buffered events and stop the SDK.
      * Call this on process shutdown.
